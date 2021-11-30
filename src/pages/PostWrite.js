@@ -1,7 +1,9 @@
-import React, {useState} from 'react'
+import React, {useState, useRef} from 'react'
 import {useSelector, useDispatch} from "react-redux"
 import {useHistory} from 'react-router-dom'
 import { actionCreators as postActions } from '../redux/modules/post'
+import { actionCreators as imgActions } from '../redux/modules/img'
+
 
 
 import {Button, Input, Text, Grid, Image} from '../elements'
@@ -11,6 +13,10 @@ import styled from 'styled-components'
 const PostWrite = () => {
    const history = useHistory();
    const dispatch = useDispatch();
+
+   const is_uploading = useSelector((state) => state.img.uploading)
+
+   const fileInput = useRef();
    const is_login = useSelector((state) => state.user.is_login)
 
    const [contents, setContents] = useState();
@@ -22,6 +28,18 @@ const PostWrite = () => {
    const updatePost = () =>{
        dispatch(postActions.addPostFB(contents))
    }
+
+   const selectFile = (e) => {
+      console.log(e.target.files[0])
+      console.log(fileInput.current.files[0])
+   }
+
+   const uploadImg = () => {
+     let image = fileInput.current.files[0]
+     dispatch(imgActions.uploadImgFB(image))
+
+
+  }
 
 
    if(!is_login){
@@ -37,11 +55,12 @@ const PostWrite = () => {
     return (
         <WriteBox>
          <Grid margin="2em 0;">
-            <Text size="1.5em" bold>Upload</Text>
-            <Input type="file" label="" />
+            <Text size="1.5em" margin="20px 0px" bold>Upload</Text>
+            <input type="file" onChange={selectFile} ref={fileInput} disabled={is_uploading} />
+            <Button text="upload" _onClick={uploadImg} />
          </Grid>
          <Grid margin="3em 0;">
-            <Text size="1.5em;" bold>Preview</Text>
+            <Text size="1.5em;" margin="20px 0px" bold>Preview</Text>
             <Image shape="rectangle" />
          </Grid>
          <Grid>
