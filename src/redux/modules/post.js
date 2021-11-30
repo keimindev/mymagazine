@@ -1,8 +1,7 @@
 import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
-
 import {db} from "../../firebase";
-
+import moment from "moment";
  
 
 const SET_POST = "SET_POST";
@@ -17,19 +16,48 @@ const initialState = {
 }
 
 const initialPost = {
-    id: 0,
-    user_info: {
-        user_name : 'min',
-        user_profile: 'https://jjalbot.com/media/2018/12/kPq_-2zCE/zzal.jpg',
+    // id: 0,
+    // user_info: {
+    //     user_name : 'min',
+    //     user_profile: 'https://jjalbot.com/media/2018/12/kPq_-2zCE/zzal.jpg',
 
-    },
+    // },
     image_url:'https://t1.daumcdn.net/section/oc/0f579edecb2c47dc973b850811d00356',
     contents: "D'oh! 오류를 발견한 내 모습",
     comment_cnt: 10,
-    insert_dt: "2021-02-27 10:00",
+    insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
+    // insert_dt: "2021-02-27 10:00",
     likes: 20,
 }
 
+const addPostFB = (contents="") =>{
+    return function(dispatch, getState, {history}){
+        const postDB = db.collection("post");
+        const _user = getState().user.user;
+        
+        console.log(_user)
+        const user_info = {
+            user_name: _user.userName,
+            user_id: _user.uid,
+            user_profile: _user.userProfile,
+        }
+        const _post = {
+            ...initialPost,
+            contents: contents,
+            insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
+        }
+
+        postDB.add({...user_info, ..._post}).then((doc) =>{
+            let post = {user_info, ..._post, id: doc.id};
+            dispatch(addPost(post))
+            history.push('/')
+
+        }).catch((err) => {
+            console.log("post 작성에 실패했어요!", err);
+        })
+    }
+
+}
 
 
 const getPostFB = () =>{
@@ -105,7 +133,7 @@ export default handleActions(
         }),
 
         [ADD_POST] : (state, action) => produce(state, (draft) =>{
-
+            draft.list.unshift(action.payload.post)
         }),
     }, initialState
 )
@@ -114,6 +142,7 @@ const actionCreators = {
     setPost,
     addPost,
     getPostFB,
+    addPostFB,
 }
 
 export { actionCreators }

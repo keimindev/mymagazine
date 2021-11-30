@@ -1,10 +1,20 @@
 import React from 'react'
 import Text from './Text'
+import Grid  from './Grid';
 import styled from 'styled-components';
 
 const Input = (props) => {
-    const {label, placeholder, _onChange, type, } = props;
+    const {label, placeholder, _onChange, type, textarea } = props;
 
+
+    if(textarea){
+        return(
+            <Grid>
+                <Text size="1.5em" bold>{label}</Text>
+                <TextArea row={20} placeholder={placeholder} onChange={_onChange}></TextArea>
+            </Grid>
+        )
+    }
     return(
     <InputForm>
         <Text>{label}</Text>
@@ -19,6 +29,7 @@ Input.defaultProps = {
     placeholder: "텍스트를 입력해주세요.",
     type: "text",
     _onChange: () => {},
+    textarea: false,
 }
 
 const InputForm = styled.div`
@@ -38,5 +49,16 @@ input{
 
 }
 `;
+
+
+const TextArea = styled.textarea`
+    width: 100%;
+    height: 150px;
+    max-height: 150px;
+    padding: 1em 0.5em;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    outline: 0;
+ `;
 
 export default Input
