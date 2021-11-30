@@ -1,18 +1,19 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 import Post from '../components/Post'
 import { Button } from '../elements'
 import styled from 'styled-components'
-import { Add } from '@material-ui/icons'
+import { apiKey } from '../firebase'
 
 const PostList = () => {
+  const history = useHistory();
+  const _sessionKey = `firebase:authUser:${apiKey}:[DEFAULT]`;
+  const is_session = sessionStorage.getItem(_sessionKey) ? true : false
     return (
         <Container>
           <Post/>
           <Post/>
-          <Link to="/write">
-          <Btn><Button bg="#EC7DB6;" bold><Add className="icon"/></Button></Btn>
-          </Link>
+          {is_session ? <Button is_float _onClick={()=> history.push('/write')}/> : <></>}
         </Container>
     )
 }
@@ -25,30 +26,4 @@ padding: 1em 0em;
 
 `;
 
-
-const Btn = styled.div`
-  width: 70px;
-  height: 70px;
-  position: fixed;
-  bottom: 2em;
-  right: 2.5em;
-  transition: all 0.5s ease;
-  border-radius: 10px;
-
-  &:hover{
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
-    }
-
-  button{
-    width: 100%;
-    height: 100%;
-    color: #fff;
-  }
-
-  
-  .icon{
-      font-size: 45px;
-      font-weight: bold;
-    }
-`;
 export default PostList

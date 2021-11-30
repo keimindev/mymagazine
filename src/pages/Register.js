@@ -8,7 +8,6 @@ import {Text, Input, Button} from './../elements'
 
 
 
-
 const Register = () => {
     const dispatch = useDispatch();
 
@@ -34,21 +33,25 @@ const Register = () => {
         <RegisterForm>
         <Text size="3em;" margin="0.8em 0;" bold>Register</Text>
         <Input 
+        type="text"
         label="아이디"
         placeholder="아이디를 입력해주세요"
         _onChange={(e) => setId(e.target.value)}
         />
         <Input 
+        type="text"
         label="닉네임"
         placeholder="닉네임을 입력해주세요"
         _onChange={(e) => setUserName(e.target.value)}
         />
         <Input 
+        type="password"
         label="비밀번호"
         placeholder="비밀번호를 입력해주세요"
         _onChange={(e) => setPw(e.target.value)}
         />
         <Input 
+         type="password"
         label="비밀번호 확인"
         placeholder="비밀번호를 재입력해주세요"
         _onChange={(e) => setPwCheck(e.target.value)}

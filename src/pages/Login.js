@@ -1,6 +1,7 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {useDispatch} from 'react-redux';
 import { actionCreators as userActions } from '../redux/modules/user';
+import { getCookie, setCookie, deleteCookie } from "../shared/Cookie";
 
 import {Text, Input, Button, Grid} from './../elements'
 
@@ -8,9 +9,15 @@ import {Text, Input, Button, Grid} from './../elements'
 const Login = () => {
     const dispatch = useDispatch();
 
+    const [id, setId] = useState()
+    const [pw, setPw] = useState()
 
     const login = () =>{
-        dispatch(userActions.loginAction({user_name: "min"}))
+        if(id===""|| pw===""){
+            window.alert("아이디 혹은 비밀번호가 공란입니다. 채워주세요");
+            return ;
+        }
+        dispatch(userActions.loginFB(id, pw))
 
     }
     return (
@@ -22,6 +29,7 @@ const Login = () => {
                 label="아이디"
                 type="text"
                 placeholder="아이디를 입력해주세요"
+                _onChange = { (e) => setId(e.target.value)}
                 />
             </Grid>
             <Grid padding="1em 0;">
@@ -29,9 +37,13 @@ const Login = () => {
                 label="비밀번호"
                 type="password" 
                 placeholder="비밀번호를 입력해주세요"
+                _onChange = { (e) => setPw(e.target.value)}
                 />
             </Grid>
-            <Button bg="#f8c2cf;" bold text="Sign in" _onClick={() => {login();}} />
+            <Button bg="#f8c2cf;" bold text="Sign in" _onClick={() => {
+                console.log("login done") 
+                login()
+                }} />
         </Grid>
         </>
     )

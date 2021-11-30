@@ -4,6 +4,7 @@ import { produce } from "immer";
 import { setCookie, getCookie, deleteCookie } from "../../shared/Cookie";
 
 import {auth} from "../../firebase";
+import firebase from "firebase/compat/app";
 
 const initialState = {
     user: null,
@@ -22,14 +23,6 @@ const getUser = createAction(GET_USER, (user) => ({user}));
 const setUser = createAction(SET_USER, (user) => ({user}));
 
 //middlewaare actions
-const loginAction = (user) => {
- return function (dispatch, getState, {history}){
-     console.log(history);
-     dispatch(setUser(user));
-     history.push('/');
- }
-}
-
 const signupFB = (id, pw, userName) => {
     return function( dispatch, getState, {history}){
         auth.createUserWithEmailAndPassword(id, pw)
@@ -39,7 +32,7 @@ const signupFB = (id, pw, userName) => {
             auth.currentUser.updateProfile({
                 displayName: userName
             }).then(() => {
-                dispatch(setUser({userName: userName, id: id, userProfile: ''}))
+                dispatch(setUser({userName: userName, id: id, userProfile: '', uid: user.user.uid}))
                 history.push('/')
             }).catch((error) => {
                 console.log(error)
@@ -54,6 +47,64 @@ const signupFB = (id, pw, userName) => {
 }
 
 
+
+const loginFB = (id, pw) => {
+  return function(dispatch, getState, {history}){
+    auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    .then((res) => {
+        //login start
+        auth.signInWithEmailAndPassword(id, pw)
+        .then((user) => {
+            console.log(user)
+            dispatch(
+                setUser({
+                userName: user.user.displayName, 
+                id: id, 
+                userProfile: '',
+                uid: user.user.uid,
+            }
+            ))
+            history.push('/')
+        })
+        .catch((error) => {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+
+          console.log(errorCode, errorMessage);
+      });
+
+    })
+  }
+}
+
+const loginCheckFB =() =>{
+    return function(dispatch, getState, {history}){
+        //user가 있느 없나
+        auth.onAuthStateChanged((user) => {
+            if(user){
+               dispatch(
+                   setUser({
+                        userName: user.displayName, 
+                        id: user.email, 
+                        userProfile: '',
+                        uid: user.uid,
+                    }))
+            }else{
+                dispatch(logOut())
+            }
+        })
+    }
+}
+
+
+const logoutFB =() =>{
+    return function(dispatch, getState, {history}){
+       auth.signOut().then( () => {
+           dispatch(logOut());
+           history.replace('/');
+       })
+    }
+}
 
 //reducer
 export default handleActions({
@@ -74,8 +125,10 @@ export default handleActions({
 const actionCreators={
     logOut,
     getUser,
-    loginAction,
     signupFB,
+    loginFB,
+    loginCheckFB,
+    logoutFB,
 };
 
 export { actionCreators };
