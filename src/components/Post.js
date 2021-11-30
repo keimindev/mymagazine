@@ -10,7 +10,7 @@ const Post = (props) => {
          <Grid padding="1em">
              <Grid is_flex>
                  <Grid is_flex width="5em;">
-                    <Image shape="circle" src={props.src} />
+                    <Image shape="circle" src={props.user_info.user_profile} />
                     <Text bold size="22px;">{props.user_info.user_name}</Text>
                  </Grid>
                  <Grid is_flex width="10em;">
@@ -20,7 +20,7 @@ const Post = (props) => {
              </Grid>
              <Grid padding="1em">
                  <Text margin="10px;">{props.contents}</Text>
-                 <Image shape="rectangle" src={props.src}/>
+                 <Image shape="rectangle" src={props.image_url}/>
              </Grid>
              <Grid is_flex width="7em;">
                  <Text bold>
@@ -28,8 +28,8 @@ const Post = (props) => {
                       {props.comment_cnt}
                 </Text>
                  <Text bold>
-                     {props.likes === 0 ? <FavoriteBorder className="icon" />: <Favorite className="icon"/>}
-                     {props.likes}
+                     {props.likes_cnt === 0 ? <FavoriteBorder className="icon" />: <Favorite className="icon"/>}
+                     {props.likes_cnt}
                 </Text>
              </Grid>
          </Grid>
@@ -47,21 +47,21 @@ Post.defaultProps = {
     contents: "D'oh! 오류를 발견한 내 모습",
     comment_cnt: 10,
     insert_dt: "2021-02-27 10:00",
-    likes: 20,
+    likes_cnt: 20,
 
 };
 
 
 const PostBox = styled.div`
-max-width: 980px;
-min-width: 400px;
-margin: 0em auto;
-padding-bottom: 1.5em;
-background-color: #fff;
-border-bottom: 1px solid pink;
+    max-width: 980px;
+    min-width: 400px;
+    margin: 0em auto;
+    padding-bottom: 1.5em;
+    background-color: #fff;
+    border-bottom: 1px solid pink;
 
-.icon{
-    margin: 0 5px;
-}
-`;
+    .icon{
+        margin: 0 5px;
+    }
+    `;
 export default Post

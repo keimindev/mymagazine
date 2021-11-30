@@ -4,10 +4,12 @@ import { Grid, Image, Button } from '../elements'
 import { useDispatch, useSelector} from 'react-redux'
 import { history } from '../redux/configStore'
 
-import styled from 'styled-components'
 import { actionCreators as userAction } from '../redux/modules/user'
 import { apiKey } from '../firebase'
 import Permit from './Permit'
+
+import styled from 'styled-components'
+import { Notifications, Person } from '@material-ui/icons'
 
 
 const Header = React.memo((props) => {
@@ -22,10 +24,10 @@ const Header = React.memo((props) => {
         <HeaderBox>
             <Grid is_flex width="100%;" margin="0 auto;">
                 <Image shape="circle" src={props.logo} size={props.size} />
-                <Grid is_flex width="280px;">
-                    <Button text="My page" bg="#EC7DB6;" margin="5px;" bold />
-                    <Button text="Alert" bg="#f39eb1;" margin="5px;" bold />
-                    <Button text="Logout" _onClick={() => {dispatch(userAction.logoutFB());}} bg="#f39eb1;" margin="5px;" bold />
+                <Grid is_flex width="190px;">
+                    <Button bg="pink;" margin="5px;" bold ><Person/></Button>
+                    <Button bg="pink;" margin="5px;" bold><Notifications/></Button>
+                    <Button text="Logout" _onClick={() => {dispatch(userAction.logoutFB());}} bg="#EC7DB6;" margin="5px;" bold />
                 </Grid>
             </Grid>
         </HeaderBox> 

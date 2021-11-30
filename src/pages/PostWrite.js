@@ -8,25 +8,37 @@ const PostWrite = () => {
     return (
         <WriteBox>
          <Grid margin="2em 0;">
-         <Text size="2em" bold>Upload</Text>
-         <input type="file" />
+            <Text size="2em" bold>Upload</Text>
+            <Input type="file" label="" />
          </Grid>
          <Grid margin="3em 0;">
-         <Text size="2em;" bold>Preview</Text>
-         <div>priview img</div>
-         <Text></Text>
+            <Text size="2em;" bold>Preview</Text>
+            <PreImg /> 
+            <Text></Text>
          </Grid>
          <Grid>
-         <Input label="게시물" height="400px;"/>
-         <Button width="400px;">Share</Button>
+            <Text size="1em;" bold>What's Happening?</Text>
+            <TextArea />
+            <Button>Share</Button>
          </Grid>
         </WriteBox>
     )
 }
 
 const WriteBox = styled.div`
-width: 700px;
-min-width: 400px;
+width: 100%;
+padding: 0 2em;
 margin: 5em auto;
+`;
+
+const PreImg = styled.div`
+height: 300px;
+object-fit: cover;
+`;
+
+const TextArea = styled.textarea`
+width: 100%;
+height: 200px;
+margin: 0.7em auto;
 `;
 export default PostWrite
