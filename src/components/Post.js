@@ -1,10 +1,13 @@
 import React from 'react';
-import { Grid, Image, Text  } from '../elements';
+import { history}from '../redux/configStore'
+
+import { Grid, Image, Text , Button } from '../elements';
 import styled from 'styled-components';
 import {Edit, Favorite, FavoriteBorder, ChatBubbleOutline } from '@material-ui/icons';
 
 
 const Post = (props) => {
+
     return (
         <PostBox>
          <Grid padding="1em">
@@ -15,7 +18,7 @@ const Post = (props) => {
                  </Grid>
                  <Grid is_flex width="10em;">
                  <Text bold>{props.insert_dt}</Text>
-                 <Edit/>
+                 {props.is_me && <Button width="50px;" _onClick={() => { history.push(`/write/${props.id}`)}}><Edit/></Button>}
                  </Grid>
              </Grid>
              <Grid padding="1em">
@@ -48,6 +51,7 @@ Post.defaultProps = {
     comment_cnt: 10,
     insert_dt: "2021-02-27 10:00",
     likes_cnt: 20,
+    is_me: false,
 
 };
 

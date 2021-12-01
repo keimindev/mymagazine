@@ -3,12 +3,13 @@ import styled from 'styled-components'
 import { Add } from '@material-ui/icons'
 
 const Button = (props) => {
-    const { margin, padding, bg, bold, children, _onClick, text, is_float} = props
+    const { margin, padding, bg, bold, children, _onClick, text, is_float, width} = props
     const styles = {
         margin: margin,
         padding: padding,
         bg: bg,
         bold: bold,
+        width: width,
     }
 
     if(is_float){
@@ -30,6 +31,7 @@ const Button = (props) => {
 Button.defaultProps = {
     children: null,
     margin: false,
+    width: '100%',
     color: false,
     bg : false,
     bold: false,
@@ -39,7 +41,7 @@ Button.defaultProps = {
 }
 
 const Btn = styled.button`
-    width: 100%;
+    width: ${(props) => props.width};
     height: 50px;
     border-radius: 10px;
     padding: 0.9em 1em;

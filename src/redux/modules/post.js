@@ -8,10 +8,12 @@ import {actionCreators as imgActions} from './img'
 const SET_POST = "SET_POST";
 const ADD_POST = "ADD_POST";
 const LOADING = "LOADING";
+const EDIT_POST = "EDIT_POST";
 
 const setPost = createAction(SET_POST, (post_list, paging) => ({post_list, paging}))
 const addPost = createAction(ADD_POST, (post) => ({post}))
 const loading = createAction(LOADING, (is_loading) => ({is_loading}))
+const editPost = createAction(EDIT_POST, (post_id, post) => ({post_id, post}))
 
 
 const initialState = {
@@ -144,6 +146,59 @@ const getPostFB = (start= null, size =3) =>{
 }
 
 
+const editPostFB = (post_id= null, post = {}) =>{
+ return function(dispatch, getState, {history}){
+
+    if(!post_id){
+        console.log("정보가 없습니다")
+        return ;
+    }
+
+    const _image = getState().img.preview;
+    const _post_idx = getState().post.list.findIndex((p) => p.id === post_id)
+    const _post = getState().post.list[_post_idx];
+    
+    const postDB = db.collection("post");
+
+    if(_image === _post.image_url){
+        postDB.doc(post_id).update(post).then((doc) =>{
+
+            //contents eidt
+            dispatch(editPost(post_id, {...post}))
+            history.replace("/")
+        })
+
+        return;
+    }else{
+        const user_id = getState().user.user.uid;
+        const _upload = storage
+                        .ref(`images/${user_id}_${new Date().getTime()}`)
+                        .putString(_image, 'data_url')
+                        
+        _upload.then((snapshot) => {
+                console.log('Uploaded a data_url string!');
+                snapshot.ref.getDownloadURL().then((url) => {
+                    console.log('File url', url);
+
+                return url;
+            }).then((url) => {
+                postDB
+                .doc(post_id)
+                .update({...post, image_url : url})
+                .then((doc) =>{
+                    dispatch(editPost(post_id, {...post, image_url : url}))
+                    history.replace("/")
+                })
+            }).catch((err) => {
+                window.alert("이미지 업로드에 실패했어요!");
+                console.log("이미지 업로드에 실패했어요!", err);
+            })
+        })
+       
+    }
+
+ }
+}
 
 
 export default handleActions(
@@ -163,6 +218,13 @@ export default handleActions(
         [LOADING] : (state, action) => produce(state, (draft) =>{
             draft.is_loading = action.payload.is_loadinig
         }),
+
+        [EDIT_POST] : (state, action) => produce(state, (draft) => {
+          let idx = draft.list.findIndex((p) => p.id === action.payload.post_id);
+
+          draft.list[idx] = { ...draft.list[idx], ...action.payload.post};
+        }) 
+
     }, initialState
 )
 
@@ -171,6 +233,7 @@ const actionCreators = {
     addPost,
     getPostFB,
     addPostFB,
+    editPostFB ,
 
 }
 

@@ -4,14 +4,19 @@ import Grid  from './Grid';
 import styled from 'styled-components';
 
 const Input = (props) => {
-    const {label, placeholder, _onChange, type, textarea } = props;
+    const {label, placeholder, _onChange, type, textarea, value } = props;
 
 
     if(textarea){
         return(
             <Grid>
                 <Text size="1.5em" bold>{label}</Text>
-                <TextArea row={20} placeholder={placeholder} onChange={_onChange}></TextArea>
+                <TextArea 
+                row={20} 
+                placeholder={placeholder} 
+                onChange={_onChange} 
+                value={value}
+                ></TextArea>
             </Grid>
         )
     }
@@ -30,6 +35,7 @@ Input.defaultProps = {
     type: "text",
     _onChange: () => {},
     textarea: false,
+    value: "",
 }
 
 const InputForm = styled.div`

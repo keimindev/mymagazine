@@ -36,7 +36,8 @@ function App() {
         <Route path='/login' exact component={Login}/>
         <Route path='/register' exact component={Register}/>
         <Route path='/write' exact component={PostWrite}/>
-        <Route path='/:id/detail' exact component={PostDetail}/>
+        <Route path='/write/:id' exact component={PostWrite}/>
+        <Route path='/post/:id' exact component={PostDetail}/>
         </ConnectedRouter>
     </Grid>
     </>

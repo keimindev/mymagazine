@@ -1,8 +1,7 @@
 import React, {useEffect} from 'react'
-import {useHistory} from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import post, { actionCreators as postActions } from '../redux/modules/post'
-import { Button } from '../elements'
+import { actionCreators as postActions } from '../redux/modules/post'
+import { Button, Grid } from '../elements'
 import Post from '../components/Post'
 import InfinityScroll from '../shared/InfinityScroll'
 
@@ -10,8 +9,7 @@ import styled from 'styled-components'
 import { apiKey } from '../firebase'
 
 
-const PostList = () => {
-  const history = useHistory();
+const PostList = (props) => {
   const dispatch = useDispatch();
   const _sessionKey = `firebase:authUser:${apiKey}:[DEFAULT]`;
   const is_session = sessionStorage.getItem(_sessionKey) ? true : false
@@ -21,7 +19,9 @@ const PostList = () => {
   const is_loading = useSelector((state) => state.post.is_loading)
   const paging = useSelector((state) => state.post.paging)
 
-  console.log(user_info, post_list)
+  const {history} = props;
+
+
   useEffect(() =>{
     if(post_list.length === 0){
       dispatch(postActions.getPostFB())
@@ -39,9 +39,18 @@ const PostList = () => {
           >
           {post_list.map((p, i) => {
              if(user_info && p.user_info.user_id === user_info.uid){
-               return <Post key={p.id} {...p} is_me/>
+               return (
+                 <Grid  key={p.id} _onClick={() => history.push(`/post/${p.id}`)}>
+                   <Post {...p} is_me/>
+                 </Grid>
+               )
+              }else{
+                return (
+                  <Grid  key={p.id} _onClick={() => history.push(`/post/${p.id}`)}>
+                    <Post {...p} />
+                  </Grid>
+                )
               }
-            return<Post key={p.id} {...p} />
           })}
           </InfinityScroll>
           {is_session ? <Button is_float _onClick={()=> history.push('/write')}/> : <></>}
