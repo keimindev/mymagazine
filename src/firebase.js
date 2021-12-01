@@ -5,7 +5,7 @@ import "firebase/compat/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
- 
+
 };
 
 // Initialize Firebase

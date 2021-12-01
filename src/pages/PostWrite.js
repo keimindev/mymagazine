@@ -14,6 +14,7 @@ const PostWrite = () => {
    const history = useHistory();
    const dispatch = useDispatch();
 
+   const preview = useSelector((state) => state.img.preview)
    const is_uploading = useSelector((state) => state.img.uploading)
 
    const fileInput = useRef();
@@ -32,13 +33,20 @@ const PostWrite = () => {
    const selectFile = (e) => {
       console.log(e.target.files[0])
       console.log(fileInput.current.files[0])
+
+      const reader = new FileReader();
+      const file = fileInput.current.files[0]
+
+      reader.readAsDataURL(file);
+      reader.onloadend =() => {
+         dispatch(imgActions.setPreview(reader.result))
+      }
+
    }
 
    const uploadImg = () => {
      let image = fileInput.current.files[0]
      dispatch(imgActions.uploadImgFB(image))
-
-
   }
 
 
@@ -61,11 +69,11 @@ const PostWrite = () => {
          </Grid>
          <Grid margin="3em 0;">
             <Text size="1.5em;" margin="20px 0px" bold>Preview</Text>
-            <Image shape="rectangle" />
+            <Image shape="rectangle" src={preview ? preview : 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBw8NDRUPDw8VFRUVFRUVFRUVFRUVFRUVFRUWFhUVFRUYHSggGBolHRUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDQ0NFQ0NFSsZFR0rKy0tKysrKystKy0tLSsrNy03KystLSsrKy0tKzctKy0tKy0rLS0rKy0rLS0rKysrK//AABEIAMQBAQMBIgACEQEDEQH/xAAXAAEBAQEAAAAAAAAAAAAAAAAAAQIH/8QAJRABAAIBAgUEAwAAAAAAAAAAAAHwETGhIUGRsdECUWHhcYHB/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/xAAVEQEBAAAAAAAAAAAAAAAAAAAAIf/aAAwDAQACEQMRAD8A7gAgl/KiACgCXVUugHRS8kuoF4gAAAF9wFLoX3LqAACAKAhdVBLqqXQAvAFAAAAAx8icAFAAAAAAABFAAABFARQAvJFAS2FAAABLot0AAAAAAAAAMgKACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH7AAAAAAAABQAAAAAARQAAAAAAAAAAAAABAAAAAAUAAAAAAEUAQBUAAAAABRAUQBQAAAAAABAAAMgAAAAoAAACCoCoACoAAIAAACgAACgAAAAAAAAACAAAAoAAAAACKIAoAgqIAqAqKiioogigoAAAAAAACGQwFAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQFRAEAAAAAAAAUAAAAAlAAAAUAAAAAAABAAAADAAAAAAAAoAAAAAACIKJkBRDIKIAoCgAAAAAIAAAAomFBBAFEBQAAEBRAFBAATKCiEAsjOVBRMqCiKoCAKIoCoAogIogCDWYBUAAELdgVC28gAJJkAygC5EMgAZBJORMHqQCJI1MAoQYUFymQFEAUIIvUALehbsCiW3mtt5AAAvEZ4e4It2S7AKs634QAL3L2QEX7RAVS9vIACALKABBOoAHqACVQBZEAWDwAI15QBYu5F2AQi7F2+wFW/wu+ABrACo/9k=' } />
          </Grid>
          <Grid>
             <Input label="Update your story" placeholder="What's happening" _onChange={changeContents} textarea />
-            <Button _onClick={updatePost}>Share</Button>
+            <Button _onClick={updatePost} margin="10px 0;">Share</Button>
          </Grid>
         </WriteBox>
     )

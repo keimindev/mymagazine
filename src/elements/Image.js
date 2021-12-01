@@ -24,7 +24,6 @@ const Image = (props) => {
     }
     return (
         <div>
-            <p>nemp</p>
         </div>
     )
 }
@@ -59,6 +58,7 @@ padding-top: 75%;
 overflow: hidden;
 background-image: url("${props => props.src}");
 background-size: cover;
+
 `;
 
 
