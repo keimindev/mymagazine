@@ -4,7 +4,7 @@ import {Spinner} from '../elements/index'
 
 const InfinityScroll = (props) => {
 
-    const {children, callNext, is_next, loading } = props
+    const {children, callNext, is_next, loading, next } = props
 
     const _handleScroll = _.throttle(()=>{
         if (loading) {
@@ -27,7 +27,6 @@ const InfinityScroll = (props) => {
         if(loading){
             return;
         }
-
         if(is_next){
             window.addEventListener("scroll", handleScroll)
         }else{

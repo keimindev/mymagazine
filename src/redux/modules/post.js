@@ -9,11 +9,13 @@ const SET_POST = "SET_POST";
 const ADD_POST = "ADD_POST";
 const LOADING = "LOADING";
 const EDIT_POST = "EDIT_POST";
+const DEL_POST = "DEL_POST";
 
 const setPost = createAction(SET_POST, (post_list, paging) => ({post_list, paging}))
 const addPost = createAction(ADD_POST, (post) => ({post}))
 const loading = createAction(LOADING, (is_loading) => ({is_loading}))
 const editPost = createAction(EDIT_POST, (post_id, post) => ({post_id, post}))
+const delPost = createAction(DEL_POST, (post_id, post) => ({post_id, post}))
 
 
 const initialState = {
@@ -91,11 +93,13 @@ const addPostFB = (contents="") =>{
 
 const getPostFB = (start= null, size =3) =>{
    return function( dispatch, getState, {history}){
+        let _paging = getState().post.paging;
 
-    let _paging = getState().post.paging;
-    if(_paging.start && !_paging.next){
-        return;
-    }
+        if(_paging.start && !_paging.next){
+            return;
+        }
+
+
        dispatch(loading(true))
        const postDB = db.collection("post");
 
@@ -216,7 +220,7 @@ export default handleActions(
         }),
 
         [LOADING] : (state, action) => produce(state, (draft) =>{
-            draft.is_loading = action.payload.is_loadinig
+            draft.is_loading = action.payload.is_loading
         }),
 
         [EDIT_POST] : (state, action) => produce(state, (draft) => {

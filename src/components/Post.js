@@ -3,10 +3,14 @@ import { history}from '../redux/configStore'
 
 import { Grid, Image, Text , Button } from '../elements';
 import styled from 'styled-components';
-import {Edit, Favorite, FavoriteBorder, ChatBubbleOutline } from '@material-ui/icons';
+import {Edit, Favorite, FavoriteBorder, ChatBubbleOutline, Close } from '@material-ui/icons';
 
 
 const Post = (props) => {
+
+    const deletePost = () =>{
+        console.log("지워주세요");
+    }
 
     return (
         <PostBox>
@@ -16,16 +20,17 @@ const Post = (props) => {
                     <Image shape="circle" src={props.user_info.user_profile} />
                     <Text bold size="22px;">{props.user_info.user_name}</Text>
                  </Grid>
-                 <Grid is_flex width="10em;">
+                 <Grid is_flex width="12em;">
                  <Text bold>{props.insert_dt}</Text>
-                 {props.is_me && <Button width="50px;" _onClick={() => { history.push(`/write/${props.id}`)}}><Edit/></Button>}
+                 {props.is_me && <Button width="4em;" _onClick={() => { history.push(`/write/${props.id}`)}}><Edit className="icon"/></Button>}
+                 {props.is_del && <Button width="4em;" _onClick={() => {deletePost()}}><Close className="icon"/></Button>}
                  </Grid>
              </Grid>
              <Grid padding="1em">
                  <Text margin="10px;">{props.contents}</Text>
                  <Image shape="rectangle" src={props.image_url}/>
              </Grid>
-             <Grid is_flex width="7em;">
+             <Grid is_flex width="6em;" margin="1em 0;">
                  <Text bold>
                      <ChatBubbleOutline className="icon"/>
                       {props.comment_cnt}
@@ -52,20 +57,22 @@ Post.defaultProps = {
     insert_dt: "2021-02-27 10:00",
     likes_cnt: 20,
     is_me: false,
+    is_del: false,
 
 };
 
 
 const PostBox = styled.div`
-    max-width: 980px;
+    max-width: 760px;
     min-width: 400px;
     margin: 0em auto;
-    padding-bottom: 1.5em;
     background-color: #fff;
-    border-bottom: 1px solid pink;
+    border-bottom: 5px solid pink;
 
     .icon{
         margin: 0 5px;
+        font-size: 20px;
+        color: #EC7DB6;
     }
     `;
 export default Post

@@ -26,8 +26,8 @@ const PostList = (props) => {
     if(post_list.length === 0){
       dispatch(postActions.getPostFB())
     }
-
   },[])
+
 
     return (
         <Container>

@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {useDispatch}  from 'react-redux'
 import {actionCreators as userActions, signupFB} from '../redux/modules/user'
 
-
+import { emailCheck, pwCheck } from '../shared/common'
 import styled from 'styled-components'
 import {Text, Input, Button} from './../elements'
 
@@ -18,10 +18,18 @@ const Register = () => {
 
     const signup = () => {
         if(id === '' || pw === '' || userName === ""){
+            window.alert("아이디, 패스워드, 닉네임을 모두 입력해주세요");
             return;
         }
 
+        if(!emailCheck(id)){
+            window.alert("이메일 형식이 맞지 앖습니다!");
+            return ;
+        }
+
+
         if(pw !== pwCheck){
+            window.alert("패스워드와 패스워드 확인이 일치하지 않습니다");
             return ;
         }
 
@@ -47,13 +55,13 @@ const Register = () => {
         <Input 
         type="password"
         label="비밀번호"
-        placeholder="비밀번호를 입력해주세요"
+        placeholder="페스워드를 입력해주세요"
         _onChange={(e) => setPw(e.target.value)}
         />
         <Input 
          type="password"
         label="비밀번호 확인"
-        placeholder="비밀번호를 재입력해주세요"
+        placeholder="패스워드를 재입력해주세요"
         _onChange={(e) => setPwCheck(e.target.value)}
         />
         <Button width="100%;" height="50px;" bg="#f8c2cf;" bold _onClick={() => {signup()}}>Create Account</Button>

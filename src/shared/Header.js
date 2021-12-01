@@ -22,7 +22,8 @@ const Header = React.memo((props) => {
     if(is_session && is_login){
         return(
         <HeaderBox>
-            <Grid is_flex width="100%;" margin="0 auto;">
+            <InnerBox>
+            <Grid is_flex width="100%;" margin="0 auto;" _onClick={() => history.push('/')}>
                 <Image shape="circle" src={props.logo} size={props.size} />
                 <Grid is_flex width="190px;">
                     <Button bg="pink;" margin="5px;" bold ><Person/></Button>
@@ -30,6 +31,7 @@ const Header = React.memo((props) => {
                     <Button text="Logout" _onClick={() => {dispatch(userAction.logoutFB());}} bg="#EC7DB6;" margin="5px;" bold />
                 </Grid>
             </Grid>
+            </InnerBox>
         </HeaderBox> 
         )
 
@@ -39,14 +41,15 @@ const Header = React.memo((props) => {
 
     return(
         <HeaderBox>
+            <InnerBox>
             <Grid is_flex width="100%;" margin="0 auto;">
-                <Image shape="circle" src={props.logo} size={props.size} />
-                
+                <Image shape="circle" src={props.logo} size={props.size}  _onClick={() => history.push('/')}/>
                 <Grid is_flex width="160px;">
                     <Button text="Register" bg="#EC7DB6;" margin="5px;" bold _onClick={()=> {history.push('/register');}}/>
                     <Button text="Login" bg="#f39eb1;" margin="5px;" bold _onClick={()=> {history.push('/login');}}/>
                 </Grid>
             </Grid>
+            </InnerBox>
         </HeaderBox>
         )
 
@@ -64,7 +67,12 @@ padding: 1em 1em;
 margin: 0 auto;
 box-sizing: border-box;
 
-
 `;
+
+const InnerBox = styled.div`
+max-width: 980px;
+min-width: 300px;
+margin: 0 auto;
+`
 
 export default Header

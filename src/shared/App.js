@@ -29,7 +29,7 @@ function App() {
 
   return (
     <>
-    <Grid>
+    <Grid> 
       <Header/>
       <ConnectedRouter history={history}>
         <Route path='/' exact component={ PostList}/>
