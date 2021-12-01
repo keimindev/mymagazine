@@ -60,7 +60,7 @@ const loginFB = (id, pw) => {
                 setUser({
                 userName: user.user.displayName, 
                 id: id, 
-                userProfile: '',
+                userProfile: 'https://mblogthumb-phinf.pstatic.net/20140202_94/exo_nunaya_1391272878567y5FM9_JPEG/2014-02-02_01%3B32%3B58.jpg?type=w2',
                 uid: user.user.uid,
             }
             ))
@@ -86,7 +86,7 @@ const loginCheckFB =() =>{
                    setUser({
                         userName: user.displayName, 
                         id: user.email, 
-                        userProfile: '',
+                        userProfile: 'https://mblogthumb-phinf.pstatic.net/20140202_94/exo_nunaya_1391272878567y5FM9_JPEG/2014-02-02_01%3B32%3B58.jpg?type=w2',
                         uid: user.uid,
                     }))
             }else{

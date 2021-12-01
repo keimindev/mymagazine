@@ -31,7 +31,7 @@ const Image = (props) => {
 Image.defaultProps = {
     shape: "circle",
     src: 'https://jjalbot.com/media/2018/12/kPq_-2zCE/zzal.jpg',
-    size: 40,
+    size: 36,
 }
 
 const ImageCircle = styled.div`
@@ -48,7 +48,7 @@ const ImageCircle = styled.div`
 
 const AspectOutter = styled.div`
 width: 100%;
-min-width: 250px;
+min-width: 260px;
 `;
 
 

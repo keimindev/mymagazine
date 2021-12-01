@@ -7,13 +7,17 @@ import {actionCreators as imgActions} from './img'
 
 const SET_POST = "SET_POST";
 const ADD_POST = "ADD_POST";
+const LOADING = "LOADING";
 
-const setPost = createAction(SET_POST, (post_list) => ({post_list}))
+const setPost = createAction(SET_POST, (post_list, paging) => ({post_list, paging}))
 const addPost = createAction(ADD_POST, (post) => ({post}))
+const loading = createAction(LOADING, (is_loading) => ({is_loading}))
 
 
 const initialState = {
-    list: []
+    list: [],
+    paging: {start: null, next: null, size: 3},
+    is_loading: false,
 }
 
 const initialPost = {
@@ -36,6 +40,7 @@ const addPostFB = (contents="") =>{
         const postDB = db.collection("post");
         const _user = getState().user.user;
         
+
         console.log(_user)
         const user_info = {
             user_name: _user.userName,
@@ -82,18 +87,38 @@ const addPostFB = (contents="") =>{
 }
 
 
-const getPostFB = () =>{
+const getPostFB = (start= null, size =3) =>{
    return function( dispatch, getState, {history}){
+
+    let _paging = getState().post.paging;
+    if(_paging.start && !_paging.next){
+        return;
+    }
+       dispatch(loading(true))
        const postDB = db.collection("post");
 
-       postDB.get().then((docs) => {
-           //뿌려지는 것은 list 배열이다. post값을 list배열에 넣어줘야한다
-           let post_list = [];
+       let query = postDB.orderBy("insert_dt", "desc")
 
-           docs.forEach((doc) =>{
-               let _post = doc.data();
+       if(start){
+          query = query.startAt(start);
+       }
 
-               let post = Object.keys(_post).reduce((acc, cur) => {
+       query
+            .limit(size + 1)
+            .get()
+            .then(docs => {
+                let post_list = [];
+
+                let paging = {
+                    start: docs.docs[0],
+                    next: docs.docs.length === size + 1 ? docs.docs[docs.docs.length -1 ] : null,
+                    size: size,
+                }
+
+            docs.forEach((doc) =>{
+                let _post = doc.data();
+
+                let post = Object.keys(_post).reduce((acc, cur) => {
 
                 if(cur.indexOf("user_") !== -1){
                     return {
@@ -101,46 +126,21 @@ const getPostFB = () =>{
                         user_info: {...acc.user_info, [cur]: _post[cur]}
                     }
                 }
-                   return {...acc, [cur] :_post[cur] }
+                    return {...acc, [cur] :_post[cur] }
 
-               },{id: doc.id, user_info: {}}
-               
-               );
+                },{id: doc.id, user_info: {}}
+                
+                );
 
             post_list.push(post);
 
+            })
+            post_list.pop();
 
-            //    let _post = {
-            //        id: doc.id,
-            //        ...doc.data()
-            //    };
+            dispatch(setPost(post_list, paging))       
+        })
 
-            //    let post = {
-            //        id:doc.id,
-            //        user_info: {
-            //         user_name :  _post.user_name,
-            //         user_profile: _post.user_profile,
-            //         user_id: _post.user_id,
-            
-            //         },
-            //         image_url:_post.img_url,
-            //         contents: _post.contents,
-            //         comment_cnt: _post.comment_cnt,
-            //         insert_dt: _post.insert_dt,
-            //         likes_cnt: _post.likes_cnt,
-
-            //    };
-
-            //   post_list.push(post)
-
-           })
-
-
-           dispatch(setPost(post_list))
-
-       })
-
-   }
+    }
 }
 
 
@@ -150,12 +150,18 @@ export default handleActions(
     {
         [SET_POST] : (state, action) => produce(state, (draft) =>{
             //new list return 
-            draft.list = action.payload.post_list;
+            draft.list.push(...action.payload.post_list)
+            draft.paging = action.payload.paging;
+            draft.is_loading = false;
 
         }),
 
         [ADD_POST] : (state, action) => produce(state, (draft) =>{
             draft.list.unshift(action.payload.post)
+        }),
+
+        [LOADING] : (state, action) => produce(state, (draft) =>{
+            draft.is_loading = action.payload.is_loadinig
         }),
     }, initialState
 )
@@ -165,6 +171,7 @@ const actionCreators = {
     addPost,
     getPostFB,
     addPostFB,
+
 }
 
 export { actionCreators }
