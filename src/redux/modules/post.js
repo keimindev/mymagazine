@@ -2,6 +2,7 @@ import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import {db, storage } from "../../firebase";
 import moment from "moment";
+import { doc, deleteDoc } from "firebase/firestore";
 
 import {actionCreators as imgActions} from './img'
 
@@ -15,7 +16,7 @@ const setPost = createAction(SET_POST, (post_list, paging) => ({post_list, pagin
 const addPost = createAction(ADD_POST, (post) => ({post}))
 const loading = createAction(LOADING, (is_loading) => ({is_loading}))
 const editPost = createAction(EDIT_POST, (post_id, post) => ({post_id, post}))
-const delPost = createAction(DEL_POST, (post_id, post) => ({post_id, post}))
+const delPost = createAction(DEL_POST, (post_id,url) => ({post_id,url}))
 
 
 const initialState = {
@@ -205,6 +206,17 @@ const editPostFB = (post_id= null, post = {}) =>{
 }
 
 
+const delPostFB = (post_id, url) => {
+    return async function(dispatch, getState, {history}){
+        const docRef = doc(db, "post", post_id)
+        await deleteDoc(docRef);
+        await storage.refFromURL(url).delete();
+   
+        dispatch(delPost(post_id, url))
+        history.push('/')
+    }
+}
+
 export default handleActions(
     {
         [SET_POST] : (state, action) => produce(state, (draft) =>{
@@ -227,7 +239,11 @@ export default handleActions(
           let idx = draft.list.findIndex((p) => p.id === action.payload.post_id);
 
           draft.list[idx] = { ...draft.list[idx], ...action.payload.post};
-        }) 
+        }),
+
+        [DEL_POST] : (state, action) => produce(state, (draft) => {
+            draft.list = draft.list.filter((p , i ) => p.id !==action.payload.post_id)
+          }) 
 
     }, initialState
 )
@@ -237,8 +253,8 @@ const actionCreators = {
     addPost,
     getPostFB,
     addPostFB,
-    editPostFB ,
-
+    editPostFB,
+    delPostFB,
 }
 
 export { actionCreators }

@@ -51,7 +51,11 @@ const Login = () => {
                 _onChange = { (e) => setPw(e.target.value)}
                 />
             </Grid>
-            <Button bg="#f8c2cf;" bold text="Sign in" width="100%;"_onClick={() => {login()}} disabled />
+            <Button 
+            bg="#f8c2cf;" 
+            bold text="Sign in" 
+            width="100%;"
+            _onClick={() => {login()}} disabled/>
         </Grid>
         </>
     )

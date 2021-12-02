@@ -1,5 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {useDispatch} from 'react-redux'
 import { history}from '../redux/configStore'
+import {actionCreators as postActions} from '../redux/modules/post'
 
 import { Grid, Image, Text , Button } from '../elements';
 import styled from 'styled-components';
@@ -7,10 +9,14 @@ import {Edit, Favorite, FavoriteBorder, ChatBubbleOutline, Close } from '@materi
 
 
 const Post = (props) => {
+    const dispatch = useDispatch();
+    const [likes, setLikes] = useState(props.likes_cnt);
 
-    const deletePost = () =>{
-        console.log("지워주세요");
+    const likeClick=()=>{
+        let count = likes;
+        setLikes( count + 1)
     }
+
 
     return (
         <PostBox>
@@ -23,7 +29,11 @@ const Post = (props) => {
                  <Grid is_flex width="12em;">
                  <Text bold>{props.insert_dt}</Text>
                  {props.is_me && <Button width="4em;" _onClick={() => { history.push(`/write/${props.id}`)}}><Edit className="icon"/></Button>}
-                 {props.is_del && <Button width="4em;" _onClick={() => {deletePost()}}><Close className="icon"/></Button>}
+                 {props.is_del && <Button width="4em;" 
+                 _onClick={() => {
+                    const ok = window.confirm("게시물을 지우시겠습니까?");
+                    if(ok) dispatch(postActions.delPostFB(`${props.id}`,`${props.image_url}`))
+                 }}><Close className="icon"/></Button>}
                  </Grid>
              </Grid>
              <Grid padding="1em">
@@ -36,8 +46,8 @@ const Post = (props) => {
                       {props.comment_cnt}
                 </Text>
                  <Text bold>
-                     {props.likes_cnt === 0 ? <FavoriteBorder className="icon" />: <Favorite className="icon"/>}
-                     {props.likes_cnt}
+                     {props.likes_cnt === 0 ? <FavoriteBorder className="icon" onClick={likeClick()}/>: <Favorite className="icon"/>}
+                     {likes}
                 </Text>
              </Grid>
          </Grid>
