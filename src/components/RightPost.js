@@ -14,16 +14,14 @@ const Post = (props) => {
     const [count, setCount] = useState(props.likes_cnt)
     const [likes, setLikes] = useState(true);
     const id = props.id;
+    
 
     const delpost = () =>{
         const ok = window.confirm("게시물을 지우시겠습니까?");
         if(ok) dispatch(postActions.delPostFB(props.id,props.image_url))
     }
 
-    const editPost = () =>{
-        history.push(`/write/${props.id}`)
-    }
-    
+
     const addLike = () => {
         if(likes){
             setCount( count + 1)
@@ -39,25 +37,28 @@ const Post = (props) => {
     return (
         <PostBox>
          <Grid padding="1em">
-            <Grid is_flex>
+                 <Grid is_flex>
                  <Grid is_flex width="32em;">
                     <Image shape="circle" src={props.user_info.user_profile} />
                     <Text bold size="22px;">{props.user_info.user_name}</Text>
                  </Grid>
                  <Grid is_flex width="9em;">
                  <Text size="0.7em;" bold>{props.insert_dt}</Text>
-                 {props.is_me && 
-                   <Button width="3em;" bg="#fff;" 
-                   _onClick={() => editPost()}><Edit className="icon"/></Button>}
+                    {props.is_me && 
+                   <Button width="3em;" bg="#fff;" _onClick={() => { history.push(`/write/${props.id}`)}}>
+                       <Edit className="icon"/>
+                    </Button>}
                  {props.is_me && <Button width="3em;" bg="#fff;"
                  _onClick={() => delpost()}><Close className="icon"/></Button>}
                  </Grid>
              </Grid>
              <Grid _onClick={() => history.push(`/post/${props.id}`)}>
-             <Grid>
-                 <Text margin="10px;">{props.contents}</Text>
+             <Box>
+                 <Text  margin="2em 0.8em;" >{props.contents}</Text>
+                 <Grid width="700px;" margin="2em 0.8em;">
                  <Image shape="rectangle" src={props.image_url}/>
-             </Grid>
+                 </Grid>
+            </Box>
              </Grid>
              <Grid is_flex width="6em;" margin="1em 0;">
                  <Text bold>
@@ -65,7 +66,7 @@ const Post = (props) => {
                       {props.comment_cnt}
                 </Text>
                  <Grid is_flex _onClick={() => addLike()} width="2.5em;">
-                     {likes ? <Button bg="#fff;" width="40px;">🤍</Button> : <Button bg="#fff;" width="40px;">💜</Button>}
+                 {likes ? <Button bg="#fff;" width="40px;">🤍</Button> : <Button bg="#fff;" width="40px;">💜</Button>}
                      <Text>{count}</Text>
                  </Grid>
              </Grid>
@@ -104,6 +105,9 @@ const PostBox = styled.div`
         color: #EC7DB6;
     }
     `;
-
-
+const Box = styled.div`
+display: flex;
+justify-content: space-between;
+padding:"1em";
+`;
 export default Post

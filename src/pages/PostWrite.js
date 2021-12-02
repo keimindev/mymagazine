@@ -41,6 +41,14 @@ const PostWrite = (props) => {
 
    
    const [contents, setContents] = useState(_post? _post.contents : "");
+   const [direction, setDirection] = useState("center");
+   const [empty, setEmpty] = useState( preview === undefined? false : true);
+
+   console.log(empty)
+
+   const changeDirection = (e) =>{
+      setDirection(e.target.value)
+   }
 
 
    //preview 
@@ -49,36 +57,38 @@ const PostWrite = (props) => {
    }
 
    const updatePost = () =>{
-       dispatch(postActions.addPostFB(contents))
+      dispatch(postActions.addPostFB(contents,direction))
    }
 
    const selectFile = (e) => {
       const reader = new FileReader();
       const file = fileInput.current.files[0]
-
+   
       reader.readAsDataURL(file);
       reader.onloadend =() => {
          dispatch(imgActions.setPreview(reader.result))
       }
 
+
+
    }
 
-   const uploadImg = () => {
-     let image = fileInput.current.files[0]
-     dispatch(imgActions.uploadImgFB(image))
-  }
+//    const uploadImg = () => {
+//      let image = fileInput.current.files[0]
+//      dispatch(imgActions.uploadImgFB(image))
+//   }
 
 
 
   const editPost = () =>{
-     dispatch(postActions.editPostFB(post_id, {contents: contents}))
+     dispatch(postActions.editPostFB(post_id, {contents: contents, direction: direction}))
   }
 
    if(!is_login){
       return(
-         <Grid margin="100px 0px" padding="1em;" center>
-            <Text size="36px;" bold>앗 잠깐!</Text>
-            <Text size="22px;">로그인 후에만 글을 쓸 수 있어요!</Text>
+         <Grid width="400px;" margin="100px auto;" padding="1em;" center>
+            <Text size="36px;" margin="20px 0px" bold center>앗 잠깐!</Text>
+            <Text size="22px;" margin="20px 0px" >로그인 후에만 글을 쓸 수 있어요!</Text>
             <Button _onClick={() => {history.replace('/login');}} text="Login" />
          </Grid>
       )
@@ -86,6 +96,7 @@ const PostWrite = (props) => {
 
     return (
         <WriteBox>
+           <InnerBox>
          <Grid margin="2em 0;">
             {is_edit ? (<
                Text size="1.5em" margin="20px 0px" bold>수정하기</Text>
@@ -94,20 +105,59 @@ const PostWrite = (props) => {
             )}
             
             <input type="file" onChange={selectFile} ref={fileInput} disabled={is_uploading} />
-            <Button text="upload" _onClick={uploadImg} />
+        
          </Grid>
          <Grid margin="3em 0;">
-            <Text size="1.5em;" margin="20px 0px" bold>Preview</Text>
-            <Image shape="rectangle" src={preview ? preview : 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBw8NDRUPDw8VFRUVFRUVFRUVFRUVFRUVFRUWFhUVFRUYHSggGBolHRUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDQ0NFQ0NFSsZFR0rKy0tKysrKystKy0tLSsrNy03KystLSsrKy0tKzctKy0tKy0rLS0rKy0rLS0rKysrK//AABEIAMQBAQMBIgACEQEDEQH/xAAXAAEBAQEAAAAAAAAAAAAAAAAAAQIH/8QAJRABAAIBAgUEAwAAAAAAAAAAAAHwETGhIUGRsdECUWHhcYHB/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/xAAVEQEBAAAAAAAAAAAAAAAAAAAAIf/aAAwDAQACEQMRAD8A7gAgl/KiACgCXVUugHRS8kuoF4gAAAF9wFLoX3LqAACAKAhdVBLqqXQAvAFAAAAAx8icAFAAAAAAABFAAABFARQAvJFAS2FAAABLot0AAAAAAAAAMgKACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH7AAAAAAAABQAAAAAARQAAAAAAAAAAAAABAAAAAAUAAAAAAEUAQBUAAAAABRAUQBQAAAAAABAAAMgAAAAoAAACCoCoACoAAIAAACgAACgAAAAAAAAACAAAAoAAAAACKIAoAgqIAqAqKiioogigoAAAAAAACGQwFAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQFRAEAAAAAAAAUAAAAAlAAAAUAAAAAAABAAAADAAAAAAAAoAAAAAACIKJkBRDIKIAoCgAAAAAIAAAAomFBBAFEBQAAEBRAFBAATKCiEAsjOVBRMqCiKoCAKIoCoAogIogCDWYBUAAELdgVC28gAJJkAygC5EMgAZBJORMHqQCJI1MAoQYUFymQFEAUIIvUALehbsCiW3mtt5AAAvEZ4e4It2S7AKs634QAL3L2QEX7RAVS9vIACALKABBOoAHqACVQBZEAWDwAI15QBYu5F2AQi7F2+wFW/wu+ABrACo/9k=' } />
+            <Text size="1.5em;" margin="20px 0px" bold>레이아웃 선택</Text>
+            <input 
+            type="radio" 
+            value="right"
+            onChange={changeDirection} 
+            checked ={direction === "right" ? true : false} 
+            /> 오른쪽
+            <Grid is_flex margin="1em 0 2em 0;">
+               <Text width="50%;" center>{contents}</Text>
+               <Grid width="500px;">
+                  <Image shape="rectangle" src={preview ? preview : 'https://camfitt.com/static/media/empty.a5238aed.jpg' } />
+               </Grid>
+            </Grid>
+            <input 
+            type="radio" 
+            value="left"
+            onChange={changeDirection}  
+            checked ={direction === "left" ? true : false}/> 
+            왼쪽
+            <Grid is_flex margin="1em 0 2em 0;">
+               <Grid width="500px;">
+                  <Image shape="rectangle" src={preview ? preview : 'https://camfitt.com/static/media/empty.a5238aed.jpg' } />
+               </Grid>
+               <Text width="50%" center>{contents}</Text>
+            </Grid>
+            <input 
+            type="radio" 
+            value="center"
+            onChange={changeDirection}  
+            checked ={direction === "center" ? true : false}
+            /> 중앙
+            <Grid margin="1em 0 2em 0;">
+               <Text margin=" 2em 0;">{contents}</Text>
+               <Image shape="rectangle" src={preview ? preview : 'https://camfitt.com/static/media/empty.a5238aed.jpg' } />
+            </Grid>
          </Grid>
          <Grid>
-            <Input label="Update your story" placeholder="What's happening" _onChange={changeContents} textarea value={contents} />
+            <Input 
+            label="Update your story" 
+            placeholder="What's happening" 
+            _onChange={changeContents} 
+            textarea value={contents} />
+
             {is_edit ? (
-                <Button text = "Edit" _onClick={editPost} margin="10px 0;" />
+                <Button _onClick={editPost} margin="10px 0;">Edit</Button>
             ) : (
-               <Button text="Share" _onClick={updatePost} margin="10px 0;"/>
+               <Button _onClick={updatePost} margin="10px 0;" disabled={!empty && !contents}>Share</Button>
             )}
          </Grid>
+         </InnerBox>
         </WriteBox>
     )
 }
@@ -116,7 +166,13 @@ const WriteBox = styled.div`
 width: 100%;
 padding: 0 2em;
 margin: 5em auto;
+box-sizing: border-box;
 `;
 
+const InnerBox = styled.div`
+max-width: 980px;
+min-width: 300px;
+margin: 0 auto;
+`
 
 export default PostWrite

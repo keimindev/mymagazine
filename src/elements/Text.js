@@ -2,9 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 
 const Text = (props) => {
-    const { bold, color, size, margin, children, center} = props;
+    const { bold, color, size, margin, children, center, width} = props;
 
-    const styles = {bold: bold, color: color, size: size, margin: margin, center:center};
+    const styles = {bold: bold, color: color, size: size, margin: margin, center:center, width: width};
 
     return (
         <P {...styles}>
@@ -21,6 +21,7 @@ Text.defaultProps = {
     size: '0.8em',
     margin: false,
     center: false,
+    width: "100%;"
 }
 
 
@@ -30,6 +31,7 @@ font-size: ${(props) => props.size};
 font-weight: ${(props) => (props.bold ? "600" : "400")};
 margin: ${(props) => (props.margin)};
 ${(props) => (props.center ? "text-align:center" : "")};
+width: ${(props) => (props.width)};
 
 display:flex;
 align-items: center;

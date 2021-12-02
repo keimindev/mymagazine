@@ -3,10 +3,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import { actionCreators as postActions } from '../redux/modules/post'
 import { Button, Grid } from '../elements'
 import Post from '../components/Post'
+import RightPost from "../components/RightPost"
+import LeftPost from "../components/LeftPost"
 import InfinityScroll from '../shared/InfinityScroll'
 
 import styled from 'styled-components'
-import { apiKey } from '../firebase'
+import   { apiKey } from '../firebase'
 
 
 const PostList = (props) => {
@@ -20,8 +22,7 @@ const PostList = (props) => {
   const paging = useSelector((state) => state.post.paging)
 
   const {history} = props;
-
-
+  
   useEffect(() =>{
     if(post_list.length === 0){
       dispatch(postActions.getPostFB())
@@ -39,17 +40,23 @@ const PostList = (props) => {
           >
           {post_list.map((p, i) => {
              if(user_info && p.user_info.user_id === user_info.uid){
-               return (
-                 <Grid  key={p.id} _onClick={() => history.push(`/post/${p.id}`)}>
-                   <Post {...p} is_me/>
-                 </Grid>
-               )
+               if(p.direction === "center"){
+                return <Post key={p.id} {...p} is_me />
+              }else if(p.direction === "right"){
+                return <RightPost key={p.id} {...p} is_me/>
+              }else if(p.direction === "left"){
+                return <LeftPost key={p.id} {...p} is_me/>
+              }
+            
               }else{
-                return (
-                  <Grid  key={p.id} _onClick={() => history.push(`/post/${p.id}`)}>
-                    <Post {...p} />
-                  </Grid>
-                )
+                if(p.direction === "center"){
+                  return <Post key={p.id} {...p} />
+                }else if(p.direction === "right"){
+                  return <RightPost key={p.id} {...p} />
+                }else if(p.direction === "left"){
+                  return <LeftPost key={p.id} {...p} />
+                }
+                
               }
           })}
           </InfinityScroll>

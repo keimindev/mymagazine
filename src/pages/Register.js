@@ -3,8 +3,7 @@ import {useDispatch}  from 'react-redux'
 import {actionCreators as userActions, signupFB} from '../redux/modules/user'
 
 import { emailCheck, pwCheck } from '../shared/common'
-import styled from 'styled-components'
-import {Text, Input, Button} from './../elements'
+import {Text, Input, Button, Grid} from './../elements'
 
 
 
@@ -38,7 +37,7 @@ const Register = () => {
 
 
     return (
-        <RegisterForm>
+        <Grid padding="1em;" width="400px;" margin="0 auto;">
         <Text size="3em;" margin="0.8em 0;" bold>Register</Text>
         <Input 
         type="text"
@@ -65,19 +64,9 @@ const Register = () => {
         _onChange={(e) => setPwCheck(e.target.value)}
         />
         <Button width="100%;" height="50px;" bg="#f8c2cf;" bold _onClick={() => {signup()}}>Create Account</Button>
-        </RegisterForm>
+        </Grid>
     )
 }
 
-const RegisterForm = styled.div`
-width: 500px;
-min-width: 300px;
-margin: 0 auto;
-
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-`;
 
 export default Register

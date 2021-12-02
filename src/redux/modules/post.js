@@ -2,7 +2,7 @@ import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import {db, storage } from "../../firebase";
 import moment from "moment";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 
 import {actionCreators as imgActions} from './img'
 
@@ -11,12 +11,14 @@ const ADD_POST = "ADD_POST";
 const LOADING = "LOADING";
 const EDIT_POST = "EDIT_POST";
 const DEL_POST = "DEL_POST";
+const LIKE_POST = "LIKE_POST";
 
 const setPost = createAction(SET_POST, (post_list, paging) => ({post_list, paging}))
-const addPost = createAction(ADD_POST, (post) => ({post}))
+const addPost = createAction(ADD_POST, (post, direction) => ({post, direction}))
 const loading = createAction(LOADING, (is_loading) => ({is_loading}))
 const editPost = createAction(EDIT_POST, (post_id, post) => ({post_id, post}))
 const delPost = createAction(DEL_POST, (post_id,url) => ({post_id,url}))
+const likePost = createAction(LIKE_POST, (post_id, cnt) => ({post_id, cnt}))
 
 
 const initialState = {
@@ -38,9 +40,10 @@ const initialPost = {
     insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
     // insert_dt: "2021-02-27 10:00",
     likes: 20,
+    direction: "center",
 }
 
-const addPostFB = (contents="") =>{
+const addPostFB = (contents="", direction) =>{
     return function(dispatch, getState, {history}){
         const postDB = db.collection("post");
         const _user = getState().user.user;
@@ -55,6 +58,7 @@ const addPostFB = (contents="") =>{
         const _post = {
             ...initialPost,
             contents: contents,
+            direction: direction,
             insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
         }
 
@@ -217,6 +221,21 @@ const delPostFB = (post_id, url) => {
     }
 }
 
+
+const likePostFB = (post_id, cnt) => {
+    return async function (dispatch, getState, {history}){
+        const docRef = doc(db, "post", post_id);
+        await updateDoc(docRef, {likes: cnt});
+        const _post_list = getState().post.list;
+        console.log(docRef, _post_list)
+ 
+        dispatch(likePost(post_id, cnt))
+    }
+}
+
+
+
+
 export default handleActions(
     {
         [SET_POST] : (state, action) => produce(state, (draft) =>{
@@ -243,10 +262,16 @@ export default handleActions(
 
         [DEL_POST] : (state, action) => produce(state, (draft) => {
             draft.list = draft.list.filter((p , i ) => p.id !==action.payload.post_id)
-          }) 
+        }), 
+        
+        [LIKE_POST] : (state, action) => produce(state, (draft) => {
+            let idx = draft.list.findIndex((p)=> p.id === action.payload.post_id); 
+            draft.list[idx] = { ...draft.list[idx], ...action.payload.post};
+        }) 
 
     }, initialState
 )
+
 
 const actionCreators = {
     setPost,
@@ -255,6 +280,7 @@ const actionCreators = {
     addPostFB,
     editPostFB,
     delPostFB,
+    likePostFB,
 }
 
 export { actionCreators }

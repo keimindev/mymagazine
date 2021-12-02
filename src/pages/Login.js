@@ -28,9 +28,6 @@ const Login = () => {
 
     }
 
-    const disableBtn = () =>{
-
-    }
     return (
         <>
         <Grid padding="1em;" width="400px;" margin="0 auto;">
@@ -55,7 +52,7 @@ const Login = () => {
             bg="#f8c2cf;" 
             bold text="Sign in" 
             width="100%;"
-            _onClick={() => {login()}} disabled/>
+            _onClick={() => {login()}}/>
         </Grid>
         </>
     )

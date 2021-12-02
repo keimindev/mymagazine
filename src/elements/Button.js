@@ -1,15 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Add } from '@material-ui/icons'
+import { Add, GolfCourse } from '@material-ui/icons'
 
 const Button = (props) => {
-    const { margin, padding, bg, bold, children, _onClick, text, is_float, width} = props
+    const { margin, padding, bg, bold, children, _onClick, text, is_float, width, cursor, disabled} = props
     const styles = {
         margin: margin,
         padding: padding,
         bg: bg,
         bold: bold,
         width: width,
+        cursor: cursor,
+        disabled:disabled,
     }
 
     if(is_float){
@@ -38,6 +40,8 @@ Button.defaultProps = {
     text: false,
     is_float:false,
     _onClick: () => {},
+    cursor: "pointer",
+    disabled: false,
 }
 
 const Btn = styled.button`

@@ -23,7 +23,7 @@ const Input = (props) => {
     return(
     <InputForm>
         <Text>{label}</Text>
-        <input type={type} placeholder={placeholder} onChange={_onChange} /> 
+        <input type={type} placeholder={placeholder} onChange={_onChange} value={value}/> 
      </InputForm>
     )
 

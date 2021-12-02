@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import Post from "../components/Post"
+import LeftPost from "../components/LeftPost"
+import RightPost from "../components/RightPost"
 
 import {useSelector} from 'react-redux'
 import {db} from '../firebase'
@@ -12,6 +14,7 @@ function PostDetail(props) {
     const post_idx = post_list.findIndex((p) => p.id === id)
     const post_data = post_list[post_idx]
 
+    
     const [post, setPost] = useState(post_data ? post_data : null);
 
     useEffect(() =>{
@@ -45,7 +48,9 @@ function PostDetail(props) {
 
     return (
         <>
-         {post && <Post {...post} is_del={post.user_info.user_id === user_info.uid} /> }
+         {post && post.direction === "center" ? <Post {...post}/> : null}
+         {post && post.direction === "right" ? <RightPost {...post}/> : null}
+         {post && post.direction === "left" ? <LeftPost {...post}/> : null}
         </>
     )
 }
