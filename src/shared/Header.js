@@ -23,8 +23,10 @@ const Header = React.memo((props) => {
         return(
         <HeaderBox>
             <InnerBox>
-            <Grid is_flex width="100%;" margin="0 auto;" _onClick={() => history.push('/')}>
+            <Grid is_flex width="100%;" margin="0 auto;">
+                <Grid _onClick={() => history.push('/')}>
                 <Image shape="circle" src={props.logo} size={props.size} />
+                </Grid>
                 <Grid is_flex width="190px;">
                     <Button bg="pink;" margin="5px;" bold ><Person/></Button>
                     <Button bg="pink;" margin="5px;" bold><Notifications/></Button>
@@ -42,8 +44,10 @@ const Header = React.memo((props) => {
     return(
         <HeaderBox>
             <InnerBox>
-            <Grid is_flex width="100%;" margin="0 auto;">
-                <Image shape="circle" src={props.logo} size={props.size}  _onClick={() => history.push('/')}/>
+            <Grid is_flex width="100%;" margin="0 auto;" >
+                <Grid _onClick={() => history.push('/')}>
+                <Image shape="circle" src={props.logo} size={props.size}/>
+                </Grid>
                 <Grid is_flex width="160px;">
                     <Button text="Register" bg="#EC7DB6;" margin="5px;" bold _onClick={()=> {history.push('/register');}}/>
                     <Button text="Login" bg="#f39eb1;" margin="5px;" bold _onClick={()=> {history.push('/login');}}/>

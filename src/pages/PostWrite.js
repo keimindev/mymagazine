@@ -25,7 +25,6 @@ const PostWrite = (props) => {
   //edit post
   const post_id = props.match.params.id;
   const is_edit = post_id ? true : false;
-
   let _post = is_edit? post_list.find((p) => p.id === post_id) : null
 
   useEffect(() => {
@@ -42,9 +41,8 @@ const PostWrite = (props) => {
    
    const [contents, setContents] = useState(_post? _post.contents : "");
    const [direction, setDirection] = useState("center");
-   const [empty, setEmpty] = useState( preview === undefined? false : true);
+   const [empty, setEmpty] = useState(fileInput.current ? true : false);
 
-   console.log(empty)
 
    const changeDirection = (e) =>{
       setDirection(e.target.value)
@@ -63,7 +61,7 @@ const PostWrite = (props) => {
    const selectFile = (e) => {
       const reader = new FileReader();
       const file = fileInput.current.files[0]
-   
+      setEmpty(file)
       reader.readAsDataURL(file);
       reader.onloadend =() => {
          dispatch(imgActions.setPreview(reader.result))
@@ -154,7 +152,7 @@ const PostWrite = (props) => {
             {is_edit ? (
                 <Button _onClick={editPost} margin="10px 0;">Edit</Button>
             ) : (
-               <Button _onClick={updatePost} margin="10px 0;" disabled={!empty && !contents}>Share</Button>
+               <Button _onClick={updatePost} margin="10px 0;" disabled={ contents && empty ? false : true}>Share</Button>
             )}
          </Grid>
          </InnerBox>

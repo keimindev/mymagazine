@@ -1,5 +1,6 @@
 import {useEffect} from 'react'
 import {Route } from 'react-router-dom'
+import {useSelector} from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import {history} from '../redux/configStore'
 import Login from '../pages/Login';
@@ -12,6 +13,7 @@ import {Grid} from '../elements'
 
 
 import {actionCreators as userActions} from '../redux/modules/user'
+import {actionCreators as likeActions} from '../redux/modules/like'
 import {useDispatch} from 'react-redux'
 import { apiKey } from '../firebase'
 

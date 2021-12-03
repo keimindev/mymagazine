@@ -1,19 +1,26 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux'
 import { history}from '../redux/configStore'
 import {actionCreators as postActions} from '../redux/modules/post'
+import {actionCreators as likesActions} from '../redux/modules/likes'
+import   { apiKey } from '../firebase'
 
 import { Grid, Image, Text , Button } from '../elements';
 import styled from 'styled-components';
 import {Edit, ChatBubbleOutline, Close } from '@material-ui/icons';
 
 
-const Post = (props) => {
-    const dispatch = useDispatch();
 
-    const [count, setCount] = useState(props.likes_cnt)
-    const [likes, setLikes] = useState(true);
+const Post = (props) => {
+    const _sessionKey = `firebase:authUser:${apiKey}:[DEFAULT]`;
+    const is_session = sessionStorage.getItem(_sessionKey) ? true : false
+
+
+    const dispatch = useDispatch();
     const id = props.id;
+    const user_id = useSelector((state)=> state.user.user?.uid)
+
+    const [likes, setLikes] = useState(false);
 
     const delpost = () =>{
         const ok = window.confirm("게시물을 지우시겠습니까?");
@@ -23,19 +30,8 @@ const Post = (props) => {
     const editPost = () =>{
         history.push(`/write/${props.id}`)
     }
-    
-    const addLike = () => {
-        if(likes){
-            setCount( count + 1)
-            setLikes(false)
-        }else{
-            setCount( count - 1)
-            setLikes(true)
-        }
 
-        dispatch(postActions.likePostFB(id,count))
-     
-    }
+    
     return (
         <PostBox>
          <Grid padding="1em">
@@ -59,15 +55,35 @@ const Post = (props) => {
                  <Image shape="rectangle" src={props.image_url}/>
              </Grid>
              </Grid>
+
              <Grid is_flex width="6em;" margin="1em 0;">
                  <Text bold>
                      <ChatBubbleOutline className="icon"/>
                       {props.comment_cnt}
                 </Text>
-                 <Grid is_flex _onClick={() => addLike()} width="2.5em;">
-                     {likes ? <Button bg="#fff;" width="40px;">🤍</Button> : <Button bg="#fff;" width="40px;">💜</Button>}
-                     <Text>{count}</Text>
-                 </Grid>
+
+                {is_session ? (
+                    <Grid is_flex width="2.5em;">
+                    { likes ?  (
+                    <Button bg="#fff;" width="40px;"
+                    _onClick={()=>{
+                    setLikes(false)
+                    // dispatch(likeActions.cancelLikeFB(id))
+                    // dispatch(likeActions.delLikePostFB(id,user_id))
+                    }}>💜</Button>
+                    ) : (
+                    <Button bg="#fff;" width="40px;"
+                    _onClick={() =>{
+                    //    dispatch(likeActions.likePostFB(id))
+                        dispatch(likesActions.setLikeFB(id, likes))
+                        setLikes(true)
+                    }}>🤍</Button>
+                    )}
+                    <Text>{props.likes}</Text>
+                    </Grid>
+
+                ) : ( <></>)}
+
              </Grid>
          </Grid>
         </PostBox>
@@ -82,9 +98,9 @@ Post.defaultProps = {
     },
     image_url:'https://t1.daumcdn.net/section/oc/0f579edecb2c47dc973b850811d00356',
     contents: "D'oh! 오류를 발견한 내 모습",
-    comment_cnt: 10,
+    comment_cnt: 0,
     insert_dt: "2021-02-27 10:00",
-    likes_cnt: 20,
+    likes_cnt: 0,
     is_me: false,
     is_del: false,
 

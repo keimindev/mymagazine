@@ -15,7 +15,6 @@ const Input = (props) => {
                 row={20} 
                 placeholder={placeholder} 
                 onChange={_onChange} 
-                value={value}
                 ></TextArea>
             </Grid>
         )
@@ -23,7 +22,7 @@ const Input = (props) => {
     return(
     <InputForm>
         <Text>{label}</Text>
-        <input type={type} placeholder={placeholder} onChange={_onChange} value={value}/> 
+        <input type={type} placeholder={placeholder} onChange={_onChange} value={value} /> 
      </InputForm>
     )
 

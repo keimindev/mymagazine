@@ -6,19 +6,20 @@ import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 
 import {actionCreators as imgActions} from './img'
 
+
 const SET_POST = "SET_POST";
 const ADD_POST = "ADD_POST";
 const LOADING = "LOADING";
 const EDIT_POST = "EDIT_POST";
 const DEL_POST = "DEL_POST";
-const LIKE_POST = "LIKE_POST";
+
 
 const setPost = createAction(SET_POST, (post_list, paging) => ({post_list, paging}))
 const addPost = createAction(ADD_POST, (post, direction) => ({post, direction}))
 const loading = createAction(LOADING, (is_loading) => ({is_loading}))
 const editPost = createAction(EDIT_POST, (post_id, post) => ({post_id, post}))
 const delPost = createAction(DEL_POST, (post_id,url) => ({post_id,url}))
-const likePost = createAction(LIKE_POST, (post_id, cnt) => ({post_id, cnt}))
+
 
 
 const initialState = {
@@ -36,12 +37,14 @@ const initialPost = {
     // },
     image_url:'https://t1.daumcdn.net/section/oc/0f579edecb2c47dc973b850811d00356',
     contents: "D'oh! 오류를 발견한 내 모습",
-    comment_cnt: 10,
+    comment_cnt: 0,
     insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
     // insert_dt: "2021-02-27 10:00",
-    likes: 20,
+    // likes: 20,
     direction: "center",
 }
+
+
 
 const addPostFB = (contents="", direction) =>{
     return function(dispatch, getState, {history}){
@@ -60,6 +63,7 @@ const addPostFB = (contents="", direction) =>{
             contents: contents,
             direction: direction,
             insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
+            likes: 0,
         }
 
         const _img = getState().img.preview
@@ -154,7 +158,6 @@ const getPostFB = (start= null, size =3) =>{
     }
 }
 
-
 const editPostFB = (post_id= null, post = {}) =>{
  return function(dispatch, getState, {history}){
 
@@ -210,6 +213,36 @@ const editPostFB = (post_id= null, post = {}) =>{
 }
 
 
+
+const getOnePostFB = (id) =>{
+    return function(dispatch, getState, {history}){
+      const postDB = db.collection("post")
+      postDB
+        .doc(id)
+        .get()
+        .then(doc => {
+  
+          let _post = doc.data()
+          let post = Object.keys(_post).reduce((acc, cur) => {
+  
+              if(cur.indexOf("user_") !== -1){
+                  return {
+                      ...acc, 
+                      user_info: {...acc.user_info, [cur]: _post[cur]}
+                  }
+              }
+                  return {...acc, [cur] :_post[cur] }
+  
+              },{id: doc.id, user_info: {}})
+        
+        dispatch(setPost([post]))
+  
+      })   
+    }
+  }
+  
+
+
 const delPostFB = (post_id, url) => {
     return async function(dispatch, getState, {history}){
         const docRef = doc(db, "post", post_id)
@@ -222,26 +255,29 @@ const delPostFB = (post_id, url) => {
 }
 
 
-const likePostFB = (post_id, cnt) => {
-    return async function (dispatch, getState, {history}){
-        const docRef = doc(db, "post", post_id);
-        await updateDoc(docRef, {likes: cnt});
-        const _post_list = getState().post.list;
-        console.log(docRef, _post_list)
- 
-        dispatch(likePost(post_id, cnt))
-    }
-}
-
-
 
 
 export default handleActions(
     {
         [SET_POST] : (state, action) => produce(state, (draft) =>{
             //new list return 
-            draft.list.push(...action.payload.post_list)
-            draft.paging = action.payload.paging;
+            draft.list.push(...action.payload.post_list);
+
+            //한개만 가져오는 것과 중복된 리스트내용 지워주기
+            draft.list = draft.list.reduce((acc, cur) =>{
+              if(acc.findIndex((a) => a.id === cur.id) === -1){
+                  return [...acc, cur]
+              }else{
+                  acc[acc.findIndex((a) => a.id === cur.id)] = cur;
+                  return acc;
+              }
+            },[]);
+
+            //paging 값이 있다면~ 새로운 값으로 
+            if(action.payload.paging){
+                draft.paging = action.payload.paging;
+            }
+            
             draft.is_loading = false;
 
         }),
@@ -263,11 +299,6 @@ export default handleActions(
         [DEL_POST] : (state, action) => produce(state, (draft) => {
             draft.list = draft.list.filter((p , i ) => p.id !==action.payload.post_id)
         }), 
-        
-        [LIKE_POST] : (state, action) => produce(state, (draft) => {
-            let idx = draft.list.findIndex((p)=> p.id === action.payload.post_id); 
-            draft.list[idx] = { ...draft.list[idx], ...action.payload.post};
-        }) 
 
     }, initialState
 )
@@ -280,7 +311,8 @@ const actionCreators = {
     addPostFB,
     editPostFB,
     delPostFB,
-    likePostFB,
+    getOnePostFB,
+  
 }
 
 export { actionCreators }

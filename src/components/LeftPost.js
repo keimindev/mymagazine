@@ -2,13 +2,14 @@ import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux'
 import { history}from '../redux/configStore'
 import {actionCreators as postActions} from '../redux/modules/post'
+import {actionCreators as likeActions} from '../redux/modules/like'
 
 import { Grid, Image, Text , Button } from '../elements';
 import styled from 'styled-components';
 import {Edit, ChatBubbleOutline, Close } from '@material-ui/icons';
 
 
-const Post = (props) => {
+const LeftPost = (props) => {
     const dispatch = useDispatch();
 
     const [count, setCount] = useState(props.likes_cnt)
@@ -22,16 +23,16 @@ const Post = (props) => {
     
     const addLike = () => {
         if(likes){
-            setCount( count + 1)
+            dispatch(likeActions.likePostFB(id))
             setLikes(false)
         }else{
-            setCount( count - 1)
+            dispatch(likeActions.cancelLikeFB(id))
             setLikes(true)
         }
-
-        dispatch(postActions.likePostFB(id,count))
      
     }
+
+    
     return (
         <PostBox>
          <Grid padding="1em">
@@ -73,7 +74,7 @@ const Post = (props) => {
     )
 }
 
-Post.defaultProps = {
+LeftPost.defaultProps = {
     user_info: {
         user_name : 'min',
         user_profile: 'https://jjalbot.com/media/2018/12/kPq_-2zCE/zzal.jpg',
@@ -109,4 +110,4 @@ const Box = styled.div`
     padding:"1em";
 
 `;
-export default Post
+export default LeftPost

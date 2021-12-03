@@ -44,24 +44,28 @@ const Register = () => {
         label="아이디"
         placeholder="아이디를 입력해주세요"
         _onChange={(e) => setId(e.target.value)}
+        value={id}
         />
         <Input 
         type="text"
         label="닉네임"
         placeholder="닉네임을 입력해주세요"
         _onChange={(e) => setUserName(e.target.value)}
+        value={userName}
         />
         <Input 
         type="password"
         label="비밀번호"
         placeholder="페스워드를 입력해주세요"
         _onChange={(e) => setPw(e.target.value)}
+        value={pw}
         />
         <Input 
          type="password"
         label="비밀번호 확인"
         placeholder="패스워드를 재입력해주세요"
         _onChange={(e) => setPwCheck(e.target.value)}
+        value={pwCheck}
         />
         <Button width="100%;" height="50px;" bg="#f8c2cf;" bold _onClick={() => {signup()}}>Create Account</Button>
         </Grid>
