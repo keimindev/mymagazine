@@ -54,7 +54,7 @@ const Login = () => {
             bg="#f8c2cf;" 
             bold text="Sign in" 
             width="100%;"
-            _onClick={() => {login()}} disabled={ pw || id ? false : true}/>
+            _onClick={() => {login()}} disabled={ pw && id ? false : true}/>
         </Grid>
         </>
     )

@@ -10,7 +10,7 @@ import styled from 'styled-components';
 const CommentList = (props) => {
     const dispatch = useDispatch();
     const comment_list = useSelector( state => state.comment.list);
-
+    console.log(comment_list)
     const {post_id} = props;
     
     useEffect(() =>{

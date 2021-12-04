@@ -9,8 +9,6 @@ const Permit = (props) => {
     const _sessionKey = `firebase:authUser:${apiKey}:[DEFAULT]`;
     const is_session = sessionStorage.getItem(_sessionKey)
 
-    console.log(is_login, is_session)
-    
     if(is_session && is_login){
         console.log('hello')
         return <React.Fragment>{props.children}</React.Fragment>

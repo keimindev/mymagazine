@@ -3,25 +3,21 @@ import {useDispatch, useSelector} from 'react-redux'
 import { history}from '../redux/configStore'
 import {actionCreators as postActions} from '../redux/modules/post'
 import {actionCreators as likesActions} from '../redux/modules/likes'
-import   { apiKey } from '../firebase'
 
 import { Grid, Image, Text , Button } from '../elements';
 import styled from 'styled-components';
 import {Edit, ChatBubbleOutline, Close } from '@material-ui/icons';
+import Like from '../shared/Like'
 
 
 
 const Post = (props) => {
-    const _sessionKey = `firebase:authUser:${apiKey}:[DEFAULT]`;
-    const is_session = sessionStorage.getItem(_sessionKey) ? true : false
-
-
     const dispatch = useDispatch();
-    const id = props.id;
-    const user_id = useSelector((state)=> state.user.user?.uid)
 
-    const [likes, setLikes] = useState(false);
-
+    useEffect(() =>{
+        dispatch(likesActions.getLikeFB(props.id));
+    },[])
+  
     const delpost = () =>{
         const ok = window.confirm("게시물을 지우시겠습니까?");
         if(ok) dispatch(postActions.delPostFB(props.id,props.image_url))
@@ -55,35 +51,12 @@ const Post = (props) => {
                  <Image shape="rectangle" src={props.image_url}/>
              </Grid>
              </Grid>
-
              <Grid is_flex width="6em;" margin="1em 0;">
                  <Text bold>
                      <ChatBubbleOutline className="icon"/>
                       {props.comment_cnt}
                 </Text>
-
-                {is_session ? (
-                    <Grid is_flex width="2.5em;">
-                    { likes ?  (
-                    <Button bg="#fff;" width="40px;"
-                    _onClick={()=>{
-                    setLikes(false)
-                    // dispatch(likeActions.cancelLikeFB(id))
-                    // dispatch(likeActions.delLikePostFB(id,user_id))
-                    }}>💜</Button>
-                    ) : (
-                    <Button bg="#fff;" width="40px;"
-                    _onClick={() =>{
-                    //    dispatch(likeActions.likePostFB(id))
-                        dispatch(likesActions.setLikeFB(id, likes))
-                        setLikes(true)
-                    }}>🤍</Button>
-                    )}
-                    <Text>{props.likes}</Text>
-                    </Grid>
-
-                ) : ( <></>)}
-
+                <Like {...props} />
              </Grid>
          </Grid>
         </PostBox>

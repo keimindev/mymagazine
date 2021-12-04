@@ -53,7 +53,7 @@ const addCommentFB = (post_id, contents) => {
         dispatch(addComment(post_id, comment));
 
         if(post){
-            dispatch(postActions.editPostFB(post_id, {comment_cnt: parseInt(post.comment_cnt) + 1}));
+            dispatch(postActions.editPost(post_id, {comment_cnt: parseInt(post.comment_cnt) + 1}));
         }
 
       })

@@ -150,8 +150,7 @@ const getPostFB = (start= null, size =3) =>{
             post_list.push(post);
 
             })
-            post_list.pop();
-
+          
             dispatch(setPost(post_list, paging))       
         })
 
@@ -307,6 +306,7 @@ export default handleActions(
 const actionCreators = {
     setPost,
     addPost,
+    editPost,
     getPostFB,
     addPostFB,
     editPostFB,

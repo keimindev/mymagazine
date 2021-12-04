@@ -32,7 +32,7 @@ const signupFB = (id, pw, userName) => {
             auth.currentUser.updateProfile({
                 displayName: userName
             }).then(() => {
-                dispatch(setUser({userName: userName, id: id, userProfile: '', uid: user.user.uid}))
+                dispatch(setUser({userName: userName, id: id, userProfile: 'https://pbs.twimg.com/media/DWNxhpoVQAENzks.jpg', uid: user.user.uid}))
                 history.push('/')
             }).catch((error) => {
                 console.log(error)
@@ -60,7 +60,7 @@ const loginFB = (id, pw) => {
                 setUser({
                 userName: user.user.displayName, 
                 id: id, 
-                userProfile: 'https://mblogthumb-phinf.pstatic.net/20140202_94/exo_nunaya_1391272878567y5FM9_JPEG/2014-02-02_01%3B32%3B58.jpg?type=w2',
+                userProfile: 'https://pbs.twimg.com/media/DWNxhpoVQAENzks.jpg',
                 uid: user.user.uid,
             }
             ))
@@ -86,7 +86,7 @@ const loginCheckFB =() =>{
                    setUser({
                         userName: user.displayName, 
                         id: user.email, 
-                        userProfile: 'https://mblogthumb-phinf.pstatic.net/20140202_94/exo_nunaya_1391272878567y5FM9_JPEG/2014-02-02_01%3B32%3B58.jpg?type=w2',
+                        userProfile: 'https://pbs.twimg.com/media/DWNxhpoVQAENzks.jpg',
                         uid: user.uid,
                     }))
             }else{

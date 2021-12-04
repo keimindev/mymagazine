@@ -6,6 +6,7 @@ import CommentList from './CommentList';
 
 
 import { Grid, Input, Button } from '../elements';
+import Permit from '../shared/Permit';
 
 const CommentWrite = (props) => { 
    const dispatch = useDispatch();
@@ -29,13 +30,15 @@ const CommentWrite = (props) => {
 
     return (
         <>
+        <Permit>
         <Box>
             <Grid width="35em;">
                 <Input label="" placeholder="댓글 내용을 입력해주세요 😀" _onChange={onChange} value={comment_text}/>
             </Grid>
-            <Button width="6em;" margin="0xp 5px 0px 5px" _onClick={write}  >작성</Button>
+            <Button width="5em;" margin="0xp 5px 0px 5px" _onClick={write}  >작성</Button>
         </Box>
         <CommentList/>
+        </Permit>
         </>
     )
 }

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux'
 import { history}from '../redux/configStore'
 import {actionCreators as postActions} from '../redux/modules/post'
-import {actionCreators as likeActions} from '../redux/modules/like'
+import Like from '../shared/Like';
 
 import { Grid, Image, Text , Button } from '../elements';
 import styled from 'styled-components';
@@ -11,25 +11,11 @@ import {Edit, ChatBubbleOutline, Close } from '@material-ui/icons';
 
 const LeftPost = (props) => {
     const dispatch = useDispatch();
-
-    const [count, setCount] = useState(props.likes_cnt)
-    const [likes, setLikes] = useState(true);
     const id = props.id;
 
     const delpost = () =>{
         const ok = window.confirm("게시물을 지우시겠습니까?");
         if(ok) dispatch(postActions.delPostFB(props.id,props.image_url))
-    }
-    
-    const addLike = () => {
-        if(likes){
-            dispatch(likeActions.likePostFB(id))
-            setLikes(false)
-        }else{
-            dispatch(likeActions.cancelLikeFB(id))
-            setLikes(true)
-        }
-     
     }
 
     
@@ -64,10 +50,7 @@ const LeftPost = (props) => {
                      <ChatBubbleOutline className="icon"/>
                       {props.comment_cnt}
                 </Text>
-                 <Grid is_flex _onClick={() => addLike()} width="2.5em;">
-                 {likes ? <Button bg="#fff;" width="40px;">🤍</Button> : <Button bg="#fff;" width="40px;">💜</Button>}
-                     <Text>{count}</Text>
-                 </Grid>
+              <Like {...props}/>
              </Grid>
          </Grid>
         </PostBox>

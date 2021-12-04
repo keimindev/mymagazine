@@ -11,9 +11,8 @@ import PostDetail from "../pages/PostDetail";
 import Header from './Header';
 import {Grid} from '../elements'
 
-
 import {actionCreators as userActions} from '../redux/modules/user'
-import {actionCreators as likeActions} from '../redux/modules/like'
+import {actionCreators as likesActions} from '../redux/modules/likes'
 import {useDispatch} from 'react-redux'
 import { apiKey } from '../firebase'
 
@@ -22,7 +21,6 @@ function App() {
   const dispatch = useDispatch();
   const _sessionKey = `firebase:authUser:${apiKey}:[DEFAULT]`;
   const is_session = sessionStorage.getItem(_sessionKey) ? true : false
-
   useEffect( () => {
     if(is_session){
       dispatch(userActions.loginCheckFB())
